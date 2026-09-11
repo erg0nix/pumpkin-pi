@@ -5,6 +5,8 @@
   "packages": [
     "npm:@smoose/pi-persona",
     "npm:pi-memory",
-    "npm:pi-web-access"
+    "npm:pi-web-access",
+    "npm:pi-codemcp",
+    "git:github.com/gitawego/pi-lsp"
   ]
 }

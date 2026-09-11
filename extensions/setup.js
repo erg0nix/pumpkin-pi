@@ -1,4 +1,7 @@
-import { readFileSync } from "node:fs";
+import { lstatSync, mkdirSync, readFileSync, symlinkSync } from "node:fs";
+import { homedir } from "node:os";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { getAgentDir, SettingsManager } from "@earendil-works/pi-coding-agent";
 
 const setters = {
@@ -53,9 +56,16 @@ async function setup(ctx) {
   const installed = new Set(packages.map(packageName));
   const missing = defaults.packages.filter((pkg) => !installed.has(packageName(pkg)));
   const preferences = Object.keys(setters).filter((key) => before[key] !== defaults[key]);
+  const promptFiles = [
+    { name: "SYSTEM.md", destination: join(getAgentDir(), "SYSTEM.md") },
+    { name: "SOUL.md", destination: join(homedir(), ".pi", "agent", "SOUL.md") },
+  ];
+  const missingPrompts = promptFiles.filter(({ destination }) =>
+    !lstatSync(destination, { throwIfNoEntry: false }),
+  );
 
-  if (!preferences.length && !missing.length) {
-    ctx.ui.notify("Pumpkin Pi defaults are already applied.", "info");
+  if (!preferences.length && !missing.length && !missingPrompts.length) {
+    ctx.ui.notify("Pumpkin Pi defaults are already applied. Existing prompt files kept.", "info");
     return;
   }
 
@@ -72,7 +82,12 @@ async function setup(ctx) {
     preview.push(`Add package: ${pkg}`);
   }
 
+  for (const { name, destination } of missingPrompts) {
+    preview.push(`Link ${destination} to Pumpkin Pi's ${name}`);
+  }
+
   preview.push("", "Unrelated settings and existing package versions and filters stay unchanged.");
+  preview.push("Existing prompt files stay unchanged. Linked prompts follow package updates.");
 
   if (missing.length) {
     preview.push("Pi will download missing packages on restart. Extensions run with your permissions.");
@@ -106,12 +121,24 @@ async function setup(ctx) {
   await settings.flush();
   checkSettingsErrors(settings);
 
-  ctx.ui.notify("Pumpkin Pi defaults saved. Restart Pi to apply them. Project overrides still take precedence.", "info");
+  for (const { name, destination } of missingPrompts) {
+    mkdirSync(dirname(destination), { recursive: true });
+
+    try {
+      symlinkSync(fileURLToPath(new URL(`../${name}`, import.meta.url)), destination, "file");
+    } catch (error) {
+      if (error.code !== "EEXIST") {
+        throw error;
+      }
+    }
+  }
+
+  ctx.ui.notify("Pumpkin Pi defaults saved. Existing prompt files kept. Restart Pi to apply changes. Project overrides still take precedence.", "info");
 }
 
 export default function pumpkinPi(pi) {
   pi.registerCommand("pumpkin-setup", {
-    description: "Review and apply Pumpkin Pi's shared preferences and missing packages",
+    description: "Review and apply Pumpkin Pi's preferences, packages, and prompts",
     handler: async (_args, ctx) => {
       if (!ctx.hasUI) {
         ctx.ui.notify("Run /pumpkin-setup in interactive Pi to review the changes.", "warning");

@@ -5,7 +5,7 @@
   "description": "A cozy collection of defaults and extensions for Pi",
   "type": "module",
   "keywords": ["pi-package"],
-  "files": ["extensions", "settings.json", "skills", "prompts", "themes"],
+  "files": ["extensions", "settings.json", "SYSTEM.md", "SOUL.md", "skills", "prompts", "themes"],
   "scripts": {
     "check": "node --check extensions/setup.js"
   },

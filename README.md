@@ -7,10 +7,15 @@
 ## Included
 
 - [pi-web-access](https://github.com/nicobailon/pi-web-access): search and page fetching.
+- [pi-codemcp](https://github.com/yolonir/pi-codemcp): MCP tool discovery and chaining, with sandboxed orchestration code. MCP servers run outside the sandbox.
+- [pi-lsp](https://github.com/gitawego/pi-lsp): language server support.
 - [pi-memory](https://github.com/jayzeng/pi-memory): persistent notes.
-- [pi-persona](https://github.com/smoosex/pi-persona): optional persona support.
+- [pi-persona](https://github.com/smoosex/pi-persona): personality from [SOUL.md](SOUL.md).
 
 [Defaults](settings.json): dark theme, hidden thinking blocks, install telemetry off.
+
+[SYSTEM.md](SYSTEM.md) defines general-purpose behavior, tool use, and judgment.
+`/pumpkin-setup` links both prompt files into Pi's configuration without replacing existing files. Linked prompts follow package updates.
 
 ## Install
 
