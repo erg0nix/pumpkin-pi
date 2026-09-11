@@ -1,0 +1,10 @@
+{
+  "enableInstallTelemetry": false,
+  "theme": "dark",
+  "hideThinkingBlock": true,
+  "packages": [
+    "npm:@smoose/pi-persona",
+    "npm:pi-memory",
+    "npm:pi-web-access"
+  ]
+}

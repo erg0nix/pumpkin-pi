@@ -1,0 +1,24 @@
+{
+  "name": "pumpkin-pi",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A cozy collection of defaults and extensions for Pi",
+  "type": "module",
+  "keywords": ["pi-package"],
+  "files": ["extensions", "settings.json", "skills", "prompts", "themes"],
+  "scripts": {
+    "check": "node --check extensions/setup.js"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": ">=0.85.1 <0.86.0"
+  },
+  "peerDependenciesMeta": {
+    "@earendil-works/pi-coding-agent": { "optional": true }
+  },
+  "pi": {
+    "extensions": ["./extensions"],
+    "skills": ["./skills"],
+    "prompts": ["./prompts"],
+    "themes": ["./themes"]
+  }
+}
